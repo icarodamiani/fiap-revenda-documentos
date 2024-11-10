@@ -1,0 +1,51 @@
+spring:
+  application:
+    name: fiap-revenda-documentos
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${OIDC_PROVIDER_ISSUER:http://dockerhost:7777/auth/realms/vodafone}
+  jackson:
+    serialization:
+      FAIL_ON_EMPTY_BEANS: false
+
+aws:
+  sqs:
+    numberOfMessages: 5
+    waitTimeMessage: 10
+    visibilityTimeOut: 30
+    documentosEmitir:
+      queue: documentos_emitir_queue
+      delay: 1000
+      poolSize: 1
+    veiculosVenda:
+      queue: veiculos_confirmar_venda_queue
+      delay: 1000
+      poolSize: 1
+
+detran:
+  webhook: ${DETRAN_WEBHOOK_URL:http://documentos:8080/documentos/detran/receber}
+  client:
+    connectionTimeout: 50000
+    responseTimeout: 50000
+    readTimeout: 50000
+    writeTimeout: 50000
+    maxConnections: 5
+    url: ${DETRAN_URL:http://detran:8080}
+
+management:
+  health:
+    probes:
+      enabled: true
+  endpoint:
+    loggers:
+      enabled: true
+    health:
+      probes:
+        enabled: true
+      show-details: "ALWAYS"
+  endpoints:
+    web:
+      exposure:
+        include: "*"
